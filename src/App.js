@@ -9,7 +9,7 @@ import {fetchFoodsList} from "./store/modules/takeaway";
 import {useEffect} from "react";
 
 const App = () => {
-  const {foodsList} = useSelector(state => state.foods)
+  const {foodsList, activeIndex} = useSelector(state => state.foods)
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchFoodsList())
@@ -17,18 +17,19 @@ const App = () => {
   return (
     <div className="home">
       {/* 导航 */}
-      <NavBar />
+      <NavBar/>
 
       {/* 内容 */}
       <div className="content-wrap">
         <div className="content">
-          <Menu />
+          <Menu/>
 
           <div className="list-content">
             <div className="goods-list">
               {/* 外卖商品列表 */}
-              {foodsList.map(item => {
+              {foodsList.map((item, index) => {
                 return (
+                  activeIndex === index &&
                   <FoodsCategory
                     key={item.tag}
                     // 列表标题
@@ -44,7 +45,7 @@ const App = () => {
       </div>
 
       {/* 购物车 */}
-      <Cart />
+      <Cart/>
     </div>
   )
 }
