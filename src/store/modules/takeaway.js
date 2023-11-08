@@ -6,17 +6,23 @@ const foodStore = createSlice({
 
   // 定义初始值
   initialState: {
-    foodsList: []
+    foodsList: [],
+    // 菜单激活下标值
+    activeIndex: 0
   },
   // 定义方法
   reducers: {
     setFoodsList (state, action) {
       state.foodsList = action.payload
+    },
+    // 更改activeIndex
+    changeActiveIndex (state, action) {
+      state.activeIndex = action.payload
     }
   }
 })
 
-const {setFoodsList} = foodStore.actions
+const {setFoodsList,changeActiveIndex} = foodStore.actions
 const fetchFoodsList = () => {
   return async dispatch => {
     const res = await axios.get('http://localhost:3004/takeaway')
@@ -24,6 +30,6 @@ const fetchFoodsList = () => {
   }
 }
 
-export {fetchFoodsList}
+export {fetchFoodsList,changeActiveIndex }
 const reducer = foodStore.reducer
 export default reducer
