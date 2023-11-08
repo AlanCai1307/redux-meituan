@@ -1,10 +1,10 @@
-import {createSlice} from "@reduxjs/toolkit";
-import axios from "axios";
+// 编写store
 
-const foodStore = createSlice({
+import {createSlice} from "@reduxjs/toolkit"
+import axios from "axios"
+
+const foodsStore = createSlice({
   name: 'foods',
-
-  // 定义初始值
   initialState: {
     // 商品列表
     foodsList: [],
@@ -13,36 +13,60 @@ const foodStore = createSlice({
     // 购物车列表
     cartList: []
   },
-  // 定义方法
   reducers: {
-    setFoodsList (state, action) {
+    // 更改商品列表
+    setFoodsList(state, action) {
       state.foodsList = action.payload
     },
     // 更改activeIndex
-    changeActiveIndex (state, action) {
+    changeActiveIndex(state, action) {
       state.activeIndex = action.payload
     },
     // 添加购物车
-    addCart (state, action) {
-      // 是否添加过
+    addCart(state, action) {
+      // 是否添加过？以action.payload.id去cartList中匹配 匹配到了 添加过
       const item = state.cartList.find(item => item.id === action.payload.id)
       if (item) {
         item.count++
       } else {
         state.cartList.push(action.payload)
       }
+    },
+    // count增
+    increCount(state, action) {
+      // 关键点：找到当前要修改谁的count id
+      const item = state.cartList.find(item => item.id === action.payload.id)
+      item.count++
+    },
+    // count减
+    decreCount(state, action) {
+      // 关键点：找到当前要修改谁的count id
+      const item = state.cartList.find(item => item.id === action.payload.id)
+      if (item.count === 0) {
+        return
+      }
+      item.count--
+    },
+    // 清除购物车
+    clearCart(state) {
+      state.cartList = []
     }
   }
 })
 
-const {setFoodsList,changeActiveIndex,addCart} = foodStore.actions
+// 异步获取部分
+const {setFoodsList, changeActiveIndex, addCart, increCount, decreCount, clearCart} = foodsStore.actions
 const fetchFoodsList = () => {
-  return async dispatch => {
+  return async (dispatch) => {
+    // 编写异步逻辑
     const res = await axios.get('http://localhost:3004/takeaway')
+    // 调用dispatch函数提交action
     dispatch(setFoodsList(res.data))
   }
 }
 
-export {fetchFoodsList,changeActiveIndex,addCart }
-const reducer = foodStore.reducer
+export {fetchFoodsList, changeActiveIndex, addCart, increCount, decreCount, clearCart}
+
+const reducer = foodsStore.reducer
+
 export default reducer
